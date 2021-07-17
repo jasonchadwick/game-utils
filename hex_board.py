@@ -75,6 +75,25 @@ class HexBoard:
         idxs.sort()
         return idxs
 
-    def print(self):
-        #TODO
+    # printfn is a function that takes in a tile index and returns a 1-line string
+    # representation of that tile, preferably the same length regardless of idx.
+    def print(self, printfn):
+        printlen = len(printfn(0))
+        buffer = 2 if printlen % 2 == 0 else 3
+        total_len = printlen * (2*self.size-1) + buffer * (2*self.size-2)
+        for z in range(-self.size+1, self.size):
+            n_vals = 2*self.size - 1 - abs(z)
+            cur_len = printlen*n_vals + buffer*(n_vals-1)
+            padding = int((total_len - cur_len) / 2)
+            print(' ' * padding, end='')
+            for n in range(n_vals):
+                x = (-(self.size-1) + n) if z >= 0 else -(self.size-1 + z - n)
+                y = (self.size-1-z-n) if z >= 0 else (self.size-1-n)
+                print(printfn(self.coords_to_idx[(x,y,z)]), end='')
+                if n != n_vals-1:
+                    print(' ' * buffer, end='')
+            print()
         pass
+
+b = HexBoard(3,False)
+b.print((lambda x : '{:2}'.format(x)))
